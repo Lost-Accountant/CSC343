@@ -19,7 +19,13 @@ public class Assignment2 extends JDBCSubmission {
     @Override
     public boolean connectDB(String url, String username, String password) {
         // Implement this method!
-        return false;
+        try {
+            Connection conn = DriverManager.getConnection(url, username, password);
+            System.out.println("Connection established");
+            return true;
+        } catch (SQLException e){
+            return false;
+        }
     }
 
     @Override
