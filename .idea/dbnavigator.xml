@@ -26,6 +26,7 @@
     <show-object-properties value="true" />
     <loaded-nodes>
       <connection connection-id="24b3258d-1675-4553-88d7-838d785a7d1a">
+        <schema name="parlgov" object-types="column, constraint, index, dataset trigger, view, table" />
         <schema name="pg_catalog" object-types="function, table" />
         <schema name="public" object-types="function, table" />
       </connection>
@@ -41,6 +42,13 @@
   </component>
   <component name="DBNavigator.Project.DatabaseSessionManager">
     <connection id="24b3258d-1675-4553-88d7-838d785a7d1a" />
+  </component>
+  <component name="DBNavigator.Project.DatasetFilterManager">
+    <filter-actions connection-id="24b3258d-1675-4553-88d7-838d785a7d1a" dataset="parlgov.cabinet_party" active-filter-id="">
+      <filter id="585acc3c-b446-4ae9-aa6e-5da9024c7160" name="Filter 1" temporary="false" custom-name="false" type="basic" join-type="AND">
+        <condition column="id" operator="=" value="" active="true" />
+      </filter>
+    </filter-actions>
   </component>
   <component name="DBNavigator.Project.EditorStateManager">
     <last-used-providers />
