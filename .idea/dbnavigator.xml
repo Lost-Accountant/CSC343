@@ -26,9 +26,10 @@
     <show-object-properties value="true" />
     <loaded-nodes>
       <connection connection-id="24b3258d-1675-4553-88d7-838d785a7d1a">
-        <schema name="parlgov" object-types="column, constraint, index, dataset trigger, view, table" />
-        <schema name="pg_catalog" object-types="function, table" />
-        <schema name="public" object-types="function, table" />
+        <schema name="information_schema" object-types="function, view, table" />
+        <schema name="parlgov" object-types="column, constraint, function, index, dataset trigger, view, table" />
+        <schema name="pg_catalog" object-types="function, view, table" />
+        <schema name="public" object-types="column, function, view, table" />
       </connection>
     </loaded-nodes>
   </component>
@@ -58,6 +59,7 @@
   </component>
   <component name="DBNavigator.Project.FileConnectionMappingManager">
     <mapping file-url="file://$PROJECT_DIR$/data/ddl.sql" connection-id="24b3258d-1675-4553-88d7-838d785a7d1a" session-id="MAIN" current-schema="public" />
+    <mapping file-url="file://$PROJECT_DIR$/data/q1.sql" connection-id="24b3258d-1675-4553-88d7-838d785a7d1a" session-id="MAIN" current-schema="information_schema" />
   </component>
   <component name="DBNavigator.Project.MethodExecutionManager">
     <method-browser />
