@@ -6,3 +6,8 @@ WHERE es1.id = es2.alliance_id);
 SELECT t2.country_id, leader_id, follower_id, t2.id
 FROM alliance, parlgov.election AS t2
 WHERE alliance.election_id = t2.id;
+
+SELECT DISTINCT t3.name
+FROM alliance, parlgov.election AS t2, parlgov.country AS t3
+WHERE alliance.election_id = t2.id AND t2.country_id = t3.id;
+-- can see that only 3 countries have those alliance stuff.
