@@ -26,8 +26,8 @@
     <show-object-properties value="true" />
     <loaded-nodes>
       <connection connection-id="24b3258d-1675-4553-88d7-838d785a7d1a">
-        <schema name="information_schema" object-types="function, table, view, column" />
-        <schema name="parlgov" object-types="function, table, view, column" />
+        <schema name="information_schema" object-types="column, function, table, view" />
+        <schema name="parlgov" object-types="column, function, table, view" />
         <schema name="pg_catalog" object-types="function, table, view" />
         <schema name="public" object-types="function, table, view" />
       </connection>
