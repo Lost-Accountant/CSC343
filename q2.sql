@@ -5,7 +5,7 @@ DROP VIEW IF EXISTS parlgov.reality CASCADE
 DROP VIEW IF EXISTS parlgov.ideal CASCADE
 
 CREATE VIEW parlgov.AllCabinetParty20 AS (
-SELECT t1.id AS party_id, t3.id AS cabinet_id, t3.country_id AS country_id
+SELECT t1.id AS party_id, t2.cabinet_id AS cabinet_id, t3.country_id AS country_id
 FROM parlgov.party AS t1, parlgov.cabinet_party AS t2, parlgov.cabinet AS t3
 WHERE t1.id = t2.party_id AND t2.cabinet_id = t3.id AND t3.start_date >= '2001-01-01'
 );
@@ -28,7 +28,8 @@ ON t1.party_id = t3.party_id
 
 SELECT *
 FROM parlgov.reality
-WHERE country_id = 54
+WHERE country_id = 5
+ORDER BY party_id
 
 CREATE VIEW ideal AS (
 SELECT DISTINCT t2.party_id, t1.cabinet_id, t1.country_id
@@ -41,9 +42,27 @@ WHERE t1.country_id = t2.country_id
 
 SELECT *
 FROM ideal
-WHERE country_id = 54
+WHERE country_id = 5
+ORDER BY party_id;
 
--- TODO: Find out how ideal - reality works in SQL
--- It is not ideal - reality (looks like working but not actually)
--- Nor is ideal NOT EXISTS (* reality), get empty return
+DROP VIEW IF EXISTS Parlgov.NotSatisfied;
 
+CREATE VIEW parlgov.NotSatisfied AS
+SELECT *
+FROM ideal
+EXCEPT
+SELECT party_id, cabinet_id, country_id
+FROM parlgov.reality;
+
+SELECT *
+FROM parlgov.NotSatisfied
+WHERE country_id = 5;
+
+SELECT *
+FROM parlgov.reality
+WHERE party_id NOT IN (
+SELECT DISTINCT party_id
+FROM NotSatisfied
+)
+-- Kpet producint empty result
+-- really no-one satisfied?
