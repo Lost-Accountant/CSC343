@@ -16,12 +16,12 @@ WHERE t1.id = t2.party_id AND t2.cabinet_id = t3.id AND t3.start_date >= '2001-0
 SELECT *
 FROM parlgov.AllCabinetParty20
 
-CREATE VIEW reality AS (
+CREATE VIEW parlgov.reality AS (
 SELECT t1.party_id, t1.cabinet_id, t1.country_id, t2.family, t3.state_market
 FROM parlgov.AllCabinetParty20 AS t1
-LEFT JOIN party_family AS t2
+LEFT JOIN parlgov.party_family AS t2
 ON t1.party_id = t2.party_id
-LEFT JOIN party_position AS t3
+LEFT JOIN parlgov.party_position AS t3
 ON t1.party_id = t3.party_id
 -- group party with family and political position
 );
@@ -58,11 +58,18 @@ SELECT *
 FROM parlgov.NotSatisfied
 WHERE country_id = 5;
 
-SELECT *
-FROM parlgov.reality
-WHERE party_id NOT IN (
+CREATE TABLE parlgov.q2 AS (
+SELECT t2.name AS countryName, t3.name AS partyName,
+t1.family AS partyFamily, t1.state_market AS stateMarket
+FROM parlgov.reality AS t1,
+parlgov.country AS t2, parlgov.party AS t3
+WHERE t1.country_id = t2.id
+AND t1.party_id = t3.id
+AND party_id NOT IN (
 SELECT DISTINCT party_id
 FROM NotSatisfied
-)
+));
 -- Kpet producint empty result
 -- really no-one satisfied?
+
+SELECT * FROM parlgov.q2
