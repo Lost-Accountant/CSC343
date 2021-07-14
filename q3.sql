@@ -3,6 +3,7 @@ DROP VIEW IF EXISTS CountWon CASCADE;
 DROP VIEW IF EXISTS ElectionAverage CASCADE;
 DROP VIEW IF EXISTS ExcelParty CASCADE;
 DROP VIEW IF EXISTS MostRecentWon CASCADE;
+DROP VIEW IF EXISTS NotRecentWon CASCADE;
 
 -- elections won for every party in every nation
 CREATE VIEW WonElection AS (
@@ -31,17 +32,49 @@ WHERE t1.country_id = t2.country_id
 AND t1.won_count >= 3 * avg_won
 );
 
-SELECT* FROM ExcelParty;
+CREATE VIEW NotRecentWon AS (
+SELECT t1.party_id, t1.election_id, t1.election_year
+FROM WonElection AS t1, WonElection AS t2
+WHERE t1.party_id = t2.party_id
+AND t1.election_year < t2.election_year);
+
+SELECT party_id, election_id, election_year
+FROM WonElection
+ORDER BY party_id, election_year;
+
+SELECT * FROM NotRecentWon
+ORDER BY party_id, election_year;
 
 -- Find the latest election won for a given party
-CREATE VIEW MostRecentWon AS
-SELECT party_id, election_id AS mostRecentlyWonElectionId, MAX(election_year) AS mostRecentlyWonElectionYear
+CREATE VIEW MostRecentWon AS (
+SELECT party_id, election_id, election_year
 FROM WonElection
-GROUP BY party_id, election_id
-WHERE election_date IN (
--- the date selected is the most recent won one for the party
-    SELECT MAX(election_date) AS mostRecentlyWonElectionYear
-    FROM WonElection
-    GROUP BY party_id
-    )
+EXCEPT ALL
+SELECT *
+FROM NotRecentWon
+ORDER BY party_id, election_year
+);
+
+
+CREATE TABLE parlgov.q3(
+countryName TEXT,
+partyName TEXT,
+partyFamily TEXT,
+wonElections INTEGER,
+mostRecentlyWonElectionId INTEGER,
+election_year INTEGER
+);
+
+INSERT INTO parlgov.q3 (
+SELECT t3.name AS countryName, t4.name AS partyName,
+t5.family AS partyFamily, t1.won_count AS wonElections,
+t2.election_id AS mostRecentlyWonElectionId,
+t2.election_year AS mostRecentlyWonElectionYear
+FROM ExcelParty AS t1, MostRecentWon AS t2, parlgov.Country AS t3, parlgov.party AS t4, parlgov.party_family AS t5
+WHERE t1.party_id = t2.party_id
+AND t1.country_id = t3.id
+AND t1.party_id = t4.id
+AND t1. party_id = t5.party_id)
 ;
+
+SELECT * FROM parlgov.q3;

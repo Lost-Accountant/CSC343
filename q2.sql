@@ -47,19 +47,24 @@ ORDER BY party_id;
 
 DROP VIEW IF EXISTS Parlgov.NotSatisfied;
 
-CREATE VIEW parlgov.NotSatisfied AS
+CREATE VIEW parlgov.NotSatisfied AS (
 SELECT *
 FROM ideal
 EXCEPT
 SELECT party_id, cabinet_id, country_id
-FROM parlgov.reality;
+FROM parlgov.reality
+);
 
-SELECT *
-FROM parlgov.NotSatisfied
-WHERE country_id = 5;
+CREATE TABLE parlgov.q2 (
+countryName TEXT,
+partyName TEXT,
+partyFamily TEXT,
+stateMarket TEXT
+);
 
-CREATE TABLE parlgov.q2 AS (
-SELECT t2.name AS countryName, t3.name AS partyName,
+INSERT INTO parlgov.q2 (countryName, partyName, partyFamily,
+stateMarket)
+(SELECT t2.name AS countryName, t3.name AS partyName,
 t1.family AS partyFamily, t1.state_market AS stateMarket
 FROM parlgov.reality AS t1,
 parlgov.country AS t2, parlgov.party AS t3
@@ -72,4 +77,4 @@ FROM NotSatisfied
 -- Kpet producint empty result
 -- really no-one satisfied?
 
-SELECT * FROM parlgov.q2
+SELECT * FROM parlgov.q2;
