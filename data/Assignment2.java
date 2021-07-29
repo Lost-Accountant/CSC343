@@ -5,7 +5,7 @@ import java.util.Scanner;
 // If you are looking for Java data structures, these are highly useful.
 // Remember that an important part of your mark is for doing as much in SQL (not Java) as you can.
 // Solutions that use only or mostly Java will not receive a high mark.
-//import java.util.ArrayList;
+import java.util.ArrayList;
 //import java.util.Map;
 //import java.util.HashMap;
 //import java.util.Set;
@@ -47,24 +47,35 @@ public class Assignment2 extends JDBCSubmission {
     @Override
     public ElectionCabinetResult electionSequence(String countryName) {
         // Implement this method!
-        String query = "SELECT t1.id AS election_id, DATE_PART('year', t1.e_date) AS year,\n" +
-                "t3.id AS current_cabinet, t3.previous_cabinet_id AS previous_cabinet\n" +
-                "FROM election AS t1, country AS t2, cabinet AS t3\n" +
+        String query = "SELECT t1.id AS election_id,\n" +
+                "t3.id AS current_cabinet\n" +
+                "FROM parlgov.election AS t1, parlgov.country AS t2, parlgov.cabinet AS t3\n" +
                 "WHERE t1.country_id = t2.id AND t1.id = t3.election_id\n" +
                 "AND t2.name = ? \n" +
-                "ORDER BY t1.e_date DESC;\n";
+                "ORDER BY t1.e_date DESC;";
+                // in descending order of years.
         try {
             PreparedStatement execstat = connection.prepareStatement(query);
             execstat.setString(1, countryName);
             // get result, rs iterable
-            ResultSet rs = execstat.executeQuery();
-            System.out.println(rs);
+            ResultSet resultSet = execstat.executeQuery();
+            // iterate the result set
+            ResultSetMetaData rsmd = resultSet.getMetaData();
+
+            List<Integer> elections = new ArrayList<Integer>();
+            List<Integer> cabinets = new ArrayList<Integer>();
+
+            while (resultSet.next()) {
+                elections.add(resultSet.getInt(1));
+                cabinets.add(resultSet.getInt(2));
+           }
+
+           return new ElectionCabinetResult(elections,cabinets);
         }
         catch(SQLException e) {
             System.out.println("Failed to get cabinet result." + e.getMessage());
             return null;
         }
-        return null;
     }
 
     @Override
@@ -96,8 +107,13 @@ public class Assignment2 extends JDBCSubmission {
         String password = userInput.next();
 
         try {
-            Assignment2 frame = new Assignment2();
-            frame.connectDB(ip, username, password);
+            Assignment2 test = new Assignment2();
+            test.connectDB(ip, username, password);
+
+            System.out.println("Country name");
+            String country = userInput.next();
+            test.electionSequence(country);
+            test.disconnectDB();
         }
         catch(ClassNotFoundException e){
             System.out.println(e.getMessage());
