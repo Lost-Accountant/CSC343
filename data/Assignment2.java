@@ -60,10 +60,9 @@ public class Assignment2 extends JDBCSubmission {
             // get result, rs iterable
             ResultSet resultSet = execstat.executeQuery();
             // iterate the result set
-            ResultSetMetaData rsmd = resultSet.getMetaData();
 
-            List<Integer> elections = new ArrayList<Integer>();
-            List<Integer> cabinets = new ArrayList<Integer>();
+            List<Integer> elections = new ArrayList<>();
+            List<Integer> cabinets = new ArrayList<>();
 
             while (resultSet.next()) {
                 elections.add(resultSet.getInt(1));
@@ -84,6 +83,13 @@ public class Assignment2 extends JDBCSubmission {
         try {
             PreparedStatement execstat = connection.prepareStatement("SELECT * FROM country");
             execstat.executeQuery();
+
+            // get the selected president and its description and comment
+
+            // get all president and their description and comment
+            // check each if similarity over threshold
+            // if so add them to a list
+            // return the list
         }
         catch(SQLException e) {
             System.out.println("Failed to get cabinet result." + e.getMessage());
