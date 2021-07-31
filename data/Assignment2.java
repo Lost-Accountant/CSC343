@@ -79,16 +79,45 @@ public class Assignment2 extends JDBCSubmission {
 
     @Override
     public List<Integer> findSimilarPoliticians(Integer politicianName, Float threshold) {
-        // Implement this method!
-        try {
-            PreparedStatement execstat = connection.prepareStatement("SELECT * FROM country");
-            execstat.executeQuery();
+        // put selected president in the query
+        String userQuery = "SELECT t1.id, t1.description, t1.comment\n" +
+                "FROM parlgov.politician_president as t1\n" +
+                "WHERE id = ? ;";
 
+        try {
+            PreparedStatement basePolitician = connection.prepareStatement(userQuery);
+            basePolitician.setInt(1, politicianName);
             // get the selected president and its description and comment
+            ResultSet baseResult = basePolitician.executeQuery();
+            // get the base comment
+            if (baseResult.next()){
+                String baseDescript = baseResult.getString(2);
+                String baseComment = baseResult.getString(3);
+            } else {
+                String baseDescript = "";
+                String baseComment = "";
+            }
 
             // get all president and their description and comment
-            // check each if similarity over threshold
-            // if so add them to a list
+            String comparisonQuery = "SELECT t1.id, t1.description, t1.comment\n" +
+                    "FROM parlgov.politician_president as t1;";
+            PreparedStatement otherPolitician = connection.prepareStatement(comparisonQuery);
+            ResultSet comparisonResult = otherPolitician.executeQuery();
+
+            // prepare list for storing similar politicians
+            List<Integer> similarPolitican = new ArrayList<>();
+
+            // check each if similarity over threshold through loop
+            while (comparisonResult.next()){
+                // include if either one passes threshold
+                // check description
+                System.out.println("lol");
+                // check comment
+
+                // if so add them to a list
+
+            }
+
             // return the list
         }
         catch(SQLException e) {
