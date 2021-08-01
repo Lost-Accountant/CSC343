@@ -90,14 +90,12 @@ public class Assignment2 extends JDBCSubmission {
             // get the selected president and its description and comment
             ResultSet baseResult = basePolitician.executeQuery();
             // get the base comment
-            if (baseResult.next()){
-                String baseDescript = baseResult.getString(2);
-                String baseComment = baseResult.getString(3);
-            } else {
-                String baseDescript = "";
-                String baseComment = "";
+            String baseDescript = "";
+            String baseComment = "";
+            if(baseResult.next()) {
+                baseDescript = baseResult.getString("description");
+                baseComment = baseResult.getString("comment");
             }
-
             // get all president and their description and comment
             String comparisonQuery = "SELECT t1.id, t1.description, t1.comment\n" +
                     "FROM parlgov.politician_president as t1;";
@@ -109,22 +107,27 @@ public class Assignment2 extends JDBCSubmission {
 
             // check each if similarity over threshold through loop
             while (comparisonResult.next()){
+                String compareDescript = comparisonResult.getString("description");
+                String compareComment = comparisonResult.getString("comment");
                 // include if either one passes threshold
                 // check description
-                System.out.println("lol");
-                // check comment
-
-                // if so add them to a list
-
+                if (similarity(baseDescript, compareDescript) >= threshold ||
+                        // check comment
+                similarity(baseComment, compareComment) >= threshold) {
+                    // if so add them to a list
+                    similarPolitican.add(comparisonResult.getInt(1));
+                }
             }
+            // remove itself
+            similarPolitican.remove(politicianName);
 
-            // return the list
+            return similarPolitican;
         }
         catch(SQLException e) {
             System.out.println("Failed to get cabinet result." + e.getMessage());
+            e.printStackTrace();
             return null;
         }
-        return null;
     }
 
     public static void main(String[] args) {
@@ -145,9 +148,10 @@ public class Assignment2 extends JDBCSubmission {
             Assignment2 test = new Assignment2();
             test.connectDB(ip, username, password);
 
-            System.out.println("Country name");
-            String country = userInput.next();
-            test.electionSequence(country);
+            System.out.println(test.electionSequence("France"));
+
+            System.out.println(test.findSimilarPoliticians(148, (float) 0.5));
+
             test.disconnectDB();
         }
         catch(ClassNotFoundException e){
